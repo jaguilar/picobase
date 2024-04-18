@@ -45,6 +45,6 @@ include(${FREERTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_i
 
 project(picobase VERSION 0.0.1 LANGUAGES C CXX ASM)
 
-if (NOT TARGET pico_stdlib)
+if (PROJECT_IS_TOP_LEVEL)
   pico_sdk_init()
 endif()
