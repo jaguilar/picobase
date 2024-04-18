@@ -1,6 +1,3 @@
-# This CMakeLists.txt file is designed to form the base of all my 
-# FreeRTOS+Pico projects. 
-
 cmake_minimum_required(VERSION 3.25)
 include(FetchContent)
 
@@ -20,14 +17,14 @@ FetchContent_Declare(
   GIT_TAG        main
 )
 if (NOT EXISTS "$ENV{PICO_SDK_PATH}")
+  message("Using Pico SDK from git")
   FetchContent_MakeAvailable(pico_sdk)
   set(PICO_SDK_PATH ${pico_sdk_SOURCE_DIR})
 else()
+  message("Using Pico SDK from environment")
   set(PICO_SDK_PATH "$ENV{PICO_SDK_PATH}")
 endif()
-if(NOT TARGET pico_stdlib)
-  include(${PICO_SDK_PATH}/external/pico_sdk_import.cmake)
-endif()
+include(${PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 if (NOT TARGET freertos_config)
   FetchContent_MakeAvailable(freertos_default_config)
 endif()
@@ -35,16 +32,12 @@ if (NOT DEFINED FREERTOS_PORT)
   set(FREERTOS_PORT GCC_RP2040 CACHE STRING "")
 endif()
 if (NOT EXISTS "$ENV{FREERTOS_KERNEL_PATH}")
-  message("submoduling freertos")
+  message("Using FreeRTOS Kernel from git")
   FetchContent_Populate(freertos_kernel)
   set(FREERTOS_KERNEL_PATH ${freertos_kernel_SOURCE_DIR})
 else()
+  message("Using FreeRTOS Kernel from environment")
   set(FREERTOS_KERNEL_PATH "$ENV{FREERTOS_KERNEL_PATH}")
 endif()
 include(${FREERTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.cmake)
 
-project(picobase VERSION 0.0.1 LANGUAGES C CXX ASM)
-
-if (PROJECT_IS_TOP_LEVEL)
-  pico_sdk_init()
-endif()
